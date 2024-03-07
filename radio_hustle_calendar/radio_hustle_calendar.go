@@ -163,17 +163,17 @@ func (t *Syncer) getCompetitions() []Competition {
 	const competitionsUrl = "https://data.radiohustle.online/db/getCompetitions/"
 
 	log.Printf("Getting competitions from %s", competitionsUrl)
-	res, err := http.Get(competitionsUrl)
+	response, err := http.Get(competitionsUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
-	resBody, err := io.ReadAll(res.Body)
+	bodyJson, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	var result []Competition
-	err = json.Unmarshal(resBody, &result)
+	err = json.Unmarshal(bodyJson, &result)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -198,7 +198,7 @@ func (t *Syncer) syncCalendar() {
 
 func (t *CompetitionAndEvent) Sync() int {
 	if t.Event == nil {
-		t.AddCalendarEvent()
+		t.addCalendarEvent()
 		return 1
 	} else if t.Competition == nil {
 		t.delCalendarEvent()
@@ -237,7 +237,7 @@ func (t *CompetitionAndEvent) getExpectedCalendarEvent() *calendar.Event {
 	}
 }
 
-func (t *CompetitionAndEvent) AddCalendarEvent() {
+func (t *CompetitionAndEvent) addCalendarEvent() {
 	expectedEvent := t.getExpectedCalendarEvent()
 	expectedEvent.Id = t.CalendarEventId
 
